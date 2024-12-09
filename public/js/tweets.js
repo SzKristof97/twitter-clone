@@ -32,6 +32,9 @@ async function fetchTweets() {
             const tweetElement = document.createElement('div');
             tweetElement.className = 'tweet';
 
+            // Replace newline characters with <br> tags
+            const formattedContent = tweet.content.replace(/\n/g, '<br>');
+
             // Check if the tweet belongs to the logged-in user
             const isOwnTweet = loggedInUser && tweet.userId._id === loggedInUser.id;
 
@@ -41,7 +44,8 @@ async function fetchTweets() {
                     <span class="timestamp">${new Date(tweet.createdAt).toLocaleString()}</span>
                 </div>
                 <div class="tweet-body">
-                    <p>${tweet.content}</p>
+                    <p class="tweet-content">${formattedContent}</p>
+                    <button class="read-more hidden">Read more...</button>
                 </div>
                 <div class="tweet-footer">
                     <button class="like-button" data-id="${tweet._id}">
@@ -54,13 +58,30 @@ async function fetchTweets() {
                         isOwnTweet
                             ? `<button class="delete-button" data-id="${tweet._id}">
                                 <span>&#128465;</span> Delete
-                               </button>`
+                                </button>`
                             : ''
                     }
                 </div>
             `;
 
             tweetsContainer.appendChild(tweetElement);
+
+            // Handle "Read more..." for tweets with large content
+            const tweetContent = tweetElement.querySelector('.tweet-content');
+            const readMoreButton = tweetElement.querySelector('.read-more');
+
+            if (tweetContent.scrollHeight > 100) { // Adjust height as needed
+                readMoreButton.classList.remove('hidden');
+                tweetContent.style.maxHeight = '100px'; // Limit the visible height
+                tweetContent.style.overflow = 'hidden';
+
+                readMoreButton.addEventListener('click', () => {
+                    const isExpanded = tweetContent.style.maxHeight === 'none';
+                    tweetContent.style.maxHeight = isExpanded ? '100px' : 'none';
+                    tweetContent.style.overflow = isExpanded ? 'hidden' : 'visible';
+                    readMoreButton.textContent = isExpanded ? 'Read more...' : 'Show less';
+                });
+            }
         });
 
         // Add event listeners for like, dislike, and delete buttons
@@ -80,6 +101,7 @@ async function fetchTweets() {
         tweetsContainer.innerHTML = '<p>Failed to load tweets. Please try again later.</p>';
     }
 }
+
 
 // Handle like and dislike actions
 async function handleLikeDislike(button, action, isLoggedIn) {

@@ -100,12 +100,34 @@ body {
     animation: slideIn 0.5s ease forwards;
     transform: translateY(20px);
     opacity: 0;
+
+    width: 60%; /* Allow the tweet to adjust to the container width */
+    margin: 0 auto; /* Center-align tweets */
+    box-sizing: border-box; /* Include padding and border in width calculation */
 }
 .tweet:nth-child(odd) {
     animation-delay: 0.1s;
 }
 .tweet:nth-child(even) {
     animation-delay: 0.2s;
+}
+
+/* Ensure responsive behavior for small screens */
+@media (max-width: 600px) {
+    .tweet {
+        padding: 1rem; /* Adjust padding for smaller screens */
+    }
+
+    .tweet-header,
+    .tweet-footer {
+        flex-direction: column; /* Stack header and footer elements */
+        align-items: flex-start;
+    }
+
+    .tweet-header .name,
+    .tweet-header .timestamp {
+        margin-bottom: 0.5rem; /* Add spacing for stacked elements */
+    }
 }
 
 /* Header of the Tweet */
@@ -126,10 +148,33 @@ body {
 
 /* Body of the Tweet */
 .tweet-body {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #dddddd;
+    position: relative;
+    word-wrap: break-word; /* Break long words */
+    white-space: normal; /* Allow text to wrap */
+}
+
+.tweet-body .tweet-content {
+    transition: max-height 0.3s ease, overflow 0.3s ease;
+}
+
+.tweet-body .read-more {
+    background: none;
+    border: none;
+    color: #1da1f2;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    display: block;
     text-align: left;
+    padding: 0;
+}
+
+.tweet-body .read-more.hidden {
+    display: none;
+}
+
+.tweet-body .read-more:hover {
+    text-decoration: underline;
 }
 
 /* Footer of the Tweet */
