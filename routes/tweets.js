@@ -68,11 +68,11 @@ router.put('/:id', isAuthenticated, async (req, res) => {
 });
 
 // Delete a tweet
-router.delete('/:id', isAuthenticated, async (req, res, next) => {
+router.delete('/:id', isAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
-
         const tweet = await Tweet.findById(id);
+
         if (!tweet) {
             return res.status(404).json({ error: 'Tweet not found' });
         }

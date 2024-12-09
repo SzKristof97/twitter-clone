@@ -322,6 +322,23 @@ body {
     box-shadow: 0 4px 10px rgba(29, 161, 242, 0.4);
 }
 
+.tweet-footer .delete-button {
+    background-color: transparent;
+    color: #e74c3c; /* Red for delete */
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.tweet-footer .delete-button:hover {
+    color: #c0392b;
+    transform: scale(1.1);
+}
+
 /* Hidden class for hiding sections */
 .hidden {
     display: none;

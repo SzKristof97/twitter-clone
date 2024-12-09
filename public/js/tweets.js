@@ -2,9 +2,13 @@ async function fetchTweets() {
     const tweetsContainer = document.getElementById('tweets-container');
 
     try {
-        // Check if the user is logged in by fetching session data
+        // Fetch session data to check if the user is logged in and get user details
         const sessionResponse = await fetch('/api/session');
-        const isLoggedIn = sessionResponse.ok;
+        let loggedInUser = null;
+        if (sessionResponse.ok) {
+            const sessionData = await sessionResponse.json();
+            loggedInUser = sessionData.user; // Get the logged-in user details
+        }
 
         // Fetch tweets from the API
         const response = await fetch('/api/tweets');
@@ -28,6 +32,9 @@ async function fetchTweets() {
             const tweetElement = document.createElement('div');
             tweetElement.className = 'tweet';
 
+            // Check if the tweet belongs to the logged-in user
+            const isOwnTweet = loggedInUser && tweet.userId._id === loggedInUser.id;
+
             tweetElement.innerHTML = `
                 <div class="tweet-header">
                     <span class="name">${tweet.userId.name}</span>
@@ -43,19 +50,30 @@ async function fetchTweets() {
                     <button class="dislike-button" data-id="${tweet._id}">
                         <span>&#128078;</span> Dislike <span class="dislike-count">${tweet.dislikes || 0}</span>
                     </button>
+                    ${
+                        isOwnTweet
+                            ? `<button class="delete-button" data-id="${tweet._id}">
+                                <span>&#128465;</span> Delete
+                               </button>`
+                            : ''
+                    }
                 </div>
             `;
 
             tweetsContainer.appendChild(tweetElement);
         });
 
-        // Add event listeners for like and dislike buttons
+        // Add event listeners for like, dislike, and delete buttons
         document.querySelectorAll('.like-button').forEach(button => {
-            button.addEventListener('click', () => handleLikeDislike(button, 'like', isLoggedIn));
+            button.addEventListener('click', () => handleLikeDislike(button, 'like', !!loggedInUser));
         });
 
         document.querySelectorAll('.dislike-button').forEach(button => {
-            button.addEventListener('click', () => handleLikeDislike(button, 'dislike', isLoggedIn));
+            button.addEventListener('click', () => handleLikeDislike(button, 'dislike', !!loggedInUser));
+        });
+
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', () => handleDeleteTweet(button));
         });
     } catch (error) {
         console.error('Error fetching tweets:', error);
@@ -92,16 +110,34 @@ async function handleLikeDislike(button, action, isLoggedIn) {
                 dislikeCount.textContent = result.dislikes;
                 likeCount.textContent = result.likes; // Update in case of previous interaction
             }
-
-            // Optionally disable buttons after action
-            // button.classList.add('clicked');
-            // button.disabled = true;
         } else {
             const error = await response.json();
             alert(error.error || `Failed to ${action}`);
         }
     } catch (error) {
         console.error(`Error during ${action}:`, error);
+    }
+}
+
+// Handle delete actions
+async function handleDeleteTweet(button) {
+    const tweetId = button.getAttribute('data-id');
+
+    try {
+        const response = await fetch(`/api/tweets/${tweetId}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Tweet deleted successfully.');
+            await fetchTweets(); // Refresh the tweets after deletion
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Failed to delete tweet. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error deleting tweet:', error);
+        alert('An error occurred. Please try again later.');
     }
 }
 
