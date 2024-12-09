@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 describe('Routes and Middleware', () => {
     beforeAll(async () => {
         // Replace with your test database URI
-        const dbURI = 'mongodb://localhost:27017/twitter_clone';
+        const dbURI = process.env.MONGO_URI_TEST;
         await mongoose.connect(dbURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,

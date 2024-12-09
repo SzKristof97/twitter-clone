@@ -1,21 +1,22 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 
-// MongoDB Connection URI
-const MONGO_URI = 'mongodb://localhost:27017/twitter_clone'; // Replace with your MongoDB Atlas URI if using it
-
-// Connect to MongoDB
-mongoose
-    .connect(MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('Error connecting to MongoDB:', err));
+if(process.env.NODE_ENV !== 'test') {
+    // Connect to MongoDB
+    mongoose
+        .connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        })
+        .then(() => console.log('Connected to MongoDB'))
+        .catch((err) => console.error('Error connecting to MongoDB:', err));
+}
 
 
 app.use(bodyParser.json());

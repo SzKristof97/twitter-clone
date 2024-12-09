@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const CustomError = require('../middleware/CustomError');
-const SECRET_KEY = 'your_secret_key';
+const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
 // Login and Register Logic
 router.post('/login', async (req, res, next) => {

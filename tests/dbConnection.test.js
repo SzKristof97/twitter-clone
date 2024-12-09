@@ -1,10 +1,10 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 describe('Database Connection', () => {
     beforeAll(async () => {
         // Replace with your test database URI
-        const dbURI = 'mongodb://localhost:27017/twitter_clone';
-        await mongoose.connect(dbURI, {
+        await mongoose.connect(process.env.MONGO_URI_TEST, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
