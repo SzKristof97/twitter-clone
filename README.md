@@ -1,14 +1,16 @@
 # Twitter Clone
 
-A simple Twitter-like application built with **Node.js**, **Express**, **MongoDB**, and **JWT** for authentication. This project allows users to register, log in, create, edit, delete tweets, and view tweets from other users.
+A simple Twitter-like application built with **Node.js**, **Express**, **MongoDB**, and **Express-Session** for authentication. This project allows users to register, log in, create, edit, delete tweets, view tweets from other users, and share tweets via a modern interface.
 
 ---
 
 ## Features
 
-- **User Authentication**: Secure registration and login using JWT.
+- **User Authentication**: Secure registration and login using sessions.
 - **Tweet Management**: Create, update, and delete tweets.
 - **Public Tweets**: View tweets from all users without authentication.
+- **Modern UI**: Share tweets with a dynamic, user-friendly interface.
+- **Session Handling**: "Share Your Tweet" section and protected routes only accessible to logged-in users.
 
 ---
 
@@ -36,7 +38,7 @@ npm install
 2. Add the following variables to the `.env` file:
    ```plaintext
    PORT=3000
-   JWT_SECRET=your_secret_key
+   SESSION_SECRET=your_secret_key
    MONGO_URI=mongodb://localhost:27017/twitter_clone
    MONGO_URI_TEST=mongodb://localhost:27017/twitter_clone_test
    ```
@@ -64,7 +66,7 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
 
 ### **Authentication**
 
-#### `POST /auth/register`
+#### `POST /api/auth/register`
 - **Description**: Registers a new user.
 - **Request Body**:
   ```json
@@ -81,8 +83,8 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
   }
   ```
 
-#### `POST /auth/login`
-- **Description**: Logs in a user and returns a JWT.
+#### `POST /api/auth/login`
+- **Description**: Logs in a user and starts a session.
 - **Request Body**:
   ```json
   {
@@ -93,8 +95,16 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
 - **Response**:
   ```json
   {
-      "token": "<jwt_token>",
       "message": "Login successful"
+  }
+  ```
+
+#### `POST /api/auth/logout`
+- **Description**: Logs out a user and destroys the session.
+- **Response**:
+  ```json
+  {
+      "message": "Logged out successfully"
   }
   ```
 
@@ -102,7 +112,7 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
 
 ### **Tweets**
 
-#### `GET /tweets`
+#### `GET /api/tweets`
 - **Description**: Fetches all tweets from all users.
 - **Response**:
   ```json
@@ -122,12 +132,12 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
   }
   ```
 
-#### `POST /tweets`
+#### `POST /api/tweets`
 - **Description**: Creates a new tweet (requires authentication).
 - **Headers**:
   ```json
   {
-      "Authorization": "Bearer <jwt_token>"
+      "Authorization": "Session-Based Authentication"
   }
   ```
 - **Request Body**:
@@ -149,14 +159,8 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
   }
   ```
 
-#### `PUT /tweets/:id`
+#### `PUT /api/tweets/:id`
 - **Description**: Updates an existing tweet (requires authentication and ownership).
-- **Headers**:
-  ```json
-  {
-      "Authorization": "Bearer <jwt_token>"
-  }
-  ```
 - **Request Body**:
   ```json
   {
@@ -176,20 +180,41 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
   }
   ```
 
-#### `DELETE /tweets/:id`
+#### `DELETE /api/tweets/:id`
 - **Description**: Deletes a tweet (requires authentication and ownership).
-- **Headers**:
-  ```json
-  {
-      "Authorization": "Bearer <jwt_token>"
-  }
-  ```
 - **Response**:
   ```json
   {
       "message": "Tweet deleted successfully"
   }
   ```
+
+#### `POST /api/tweets/:id/like`
+- **Description**: Likes a tweet (requires authentication).
+- **Response**:
+  ```json
+  {
+      "like": 10
+  }
+  ```
+
+#### `POST /api/tweets/:id/dislike`
+- **Description**: Dislikes a tweet (requires authentication).
+- **Response**:
+  ```json
+  {
+      "dislike": 5
+  }
+  ```
+
+---
+
+## UI Features
+
+### **Share Your Tweet Section**
+- **Visible only to logged-in users.**
+- Allows users to write and submit tweets via a form.
+- Dynamically updates the tweets section after submission.
 
 ---
 
