@@ -19,11 +19,37 @@ async function checkSessionForTweetSection() {
 // Handle tweet form submission
 async function handleShareTweetForm() {
     const shareTweetForm = document.getElementById('share-tweet-form');
+    const tweetContent = document.getElementById('tweet-content');
+    const charCounter = document.getElementById('char-counter');
+
+    // Check if tweetContent and charCounter exist
+    if (!tweetContent || !charCounter) {
+        console.error('Tweet content or character counter element not found.');
+        return;
+    }
+
+    // Update character counter dynamically
+    tweetContent.addEventListener('input', () => {
+        const charCount = tweetContent.value.length;
+        charCounter.textContent = `${charCount}/1000`;
+
+        // Change the color of the counter if nearing the limit
+        if (charCount > 900) {
+            charCounter.style.color = '#e74c3c'; // Red when close to limit
+        } else {
+            charCounter.style.color = '#aaaaaa'; // Default gray
+        }
+    });
 
     shareTweetForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const content = document.getElementById('tweet-content').value;
+        const content = tweetContent.value;
+
+        if (content.length > 1000) {
+            alert('Tweet exceeds the maximum character limit of 1000.');
+            return;
+        }
 
         try {
             const response = await fetch('/api/tweets', {
@@ -34,7 +60,8 @@ async function handleShareTweetForm() {
 
             if (response.ok) {
                 alert('Tweet shared successfully!');
-                document.getElementById('tweet-content').value = ''; // Clear the textarea
+                tweetContent.value = ''; // Clear the textarea
+                charCounter.textContent = '0/1000'; // Reset character counter
                 await fetchTweets(); // Refresh the tweets section
             } else {
                 const errorData = await response.json();
