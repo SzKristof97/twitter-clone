@@ -17,7 +17,7 @@ A simple Twitter-like application built with **Node.js**, **Express**, **MongoDB
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/twitter-clone.git
+git clone https://github.com/SzKristof97/twitter-clone.git
 cd twitter-clone
 ```
 

@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const Tweet = require('./models/Tweet');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -18,7 +19,11 @@ if(process.env.NODE_ENV !== 'test') {
         .catch((err) => console.error('Error connecting to MongoDB:', err));
 }
 
+// Templating Engine for rendering HTML
+app.set('view engine', 'ejs');
+app.set('views', './public/views');
 
+// Parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -28,11 +33,12 @@ const tweetRoutes = require('./routes/tweets');
 const errorHandler = require('./middleware/errorHandler'); // Import the error handler
 
 
-app.use('/auth', authRoutes);
-app.use('/tweets', tweetRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/tweets', tweetRoutes);
 
-app.get('/', (req, res) => {
-    res.send('Welcome to Twitter Clone!');
+app.get('/', async (req, res) => {
+    const tweets = await Tweet.find().populate('userId', 'name');
+    res.render('index', { tweets });
 });
 
 // Error handler middleware (must be after routes)
