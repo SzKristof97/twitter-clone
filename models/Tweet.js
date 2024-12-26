@@ -8,6 +8,7 @@ const TweetSchema = new mongoose.Schema({
     dislikes: { type: Number, default: 0 },
     likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track users who liked
     dislikedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track users who disliked
+    originalTweetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tweet', default: null }, // Original tweet for retweets
 });
 
 module.exports = mongoose.model('Tweet', TweetSchema);

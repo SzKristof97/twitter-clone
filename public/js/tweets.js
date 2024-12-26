@@ -36,7 +36,7 @@ async function fetchTweets(selectedUserIds = []) {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
 
         // Render tweets
-        filteredTweets.forEach(tweet => {
+        for(const tweet of filteredTweets) {
             const tweetElement = document.createElement('div');
             tweetElement.className = 'tweet';
 
@@ -56,8 +56,16 @@ async function fetchTweets(selectedUserIds = []) {
                     <span class="timestamp">${new Date(tweet.createdAt).toLocaleString()}</span>
                 </div>
                 <div class="tweet-body">
-                    <p class="tweet-content">${formattedContent}</p>
-                    <button class="read-more hidden">Read more...</button>
+                    ${
+                        tweet.originalTweetId
+                            ? `<div class="retweet-content">
+                                <p>Retweeted:</p>
+                                <p class="original-tweet">${tweet.content}</p>
+                                <button class="read-more hidden">Read more...</button>
+                                </div>`
+                            : `<p class="tweet-content">${formattedContent}</p>
+                                <button class="read-more hidden">Read more...</button>`
+                    }
                 </div>
                 <div class="tweet-footer">
                     <button class="like-button" data-id="${tweet._id}">
@@ -66,6 +74,13 @@ async function fetchTweets(selectedUserIds = []) {
                     <button class="dislike-button" data-id="${tweet._id}">
                         <span>&#128078;</span> Dislike <span class="dislike-count">${tweet.dislikes || 0}</span>
                     </button>
+                    ${
+                        (loggedInUser && tweet.userId._id !== loggedInUser.id)
+                        ? `<button class="retweet-button" data-id="${tweet._id}">
+                            <span>&#128257;</span> Retweet
+                            </button>`
+                        : ''
+                    }
                     ${
                         isOwnTweet
                             ? `<button class="delete-button" data-id="${tweet._id}">
@@ -80,9 +95,10 @@ async function fetchTweets(selectedUserIds = []) {
 
             // Handle "Read more..." for tweets with large content
             const tweetContent = tweetElement.querySelector('.tweet-content');
+            const originalContent = tweetElement.querySelector('.original-content');
             const readMoreButton = tweetElement.querySelector('.read-more');
 
-            if (tweetContent.scrollHeight > 100) { // Adjust height as needed
+            if (tweetContent && tweetContent.scrollHeight > 100) { // Adjust height as needed
                 readMoreButton.classList.remove('hidden');
                 tweetContent.style.maxHeight = '100px'; // Limit the visible height
                 tweetContent.style.overflow = 'hidden';
@@ -94,6 +110,23 @@ async function fetchTweets(selectedUserIds = []) {
                     readMoreButton.textContent = isExpanded ? 'Read more...' : 'Show less';
                 });
             }
+            if (originalContent && originalContent.scrollHeight > 100) { // Adjust height as needed
+                readMoreButton.classList.remove('hidden');
+                originalContent.style.maxHeight = '100px'; // Limit the visible height
+                originalContent.style.overflow = 'hidden';
+
+                readMoreButton.addEventListener('click', () => {
+                    const isExpanded = originalContent.style.maxHeight === 'none';
+                    originalContent.style.maxHeight = isExpanded ? '100px' : 'none';
+                    originalContent.style.overflow = isExpanded ? 'hidden' : 'visible';
+                    readMoreButton.textContent = isExpanded ? 'Read more...' : 'Show less';
+                });
+            }
+        }
+
+        // Add event listeners for retweet buttons
+        document.querySelectorAll('.retweet-button').forEach(button => {
+            button.addEventListener('click', () => handleRetweet(button));
         });
 
         // Add event listeners for like, dislike, and delete buttons
@@ -171,6 +204,27 @@ async function handleDeleteTweet(button) {
         }
     } catch (error) {
         console.error('Error deleting tweet:', error);
+        alert('An error occurred. Please try again later.');
+    }
+}
+
+async function handleRetweet(button) {
+    const tweetId = button.getAttribute('data-id');
+
+    try {
+        const response = await fetch(`/api/tweets/${tweetId}/retweet`, {
+            method: 'POST',
+        });
+
+        if (response.ok) {
+            alert('Retweet successful!');
+            await fetchTweets(); // Refresh the tweets after retweeting
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Failed to retweet. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error retweeting:', error);
         alert('An error occurred. Please try again later.');
     }
 }

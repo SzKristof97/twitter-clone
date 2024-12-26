@@ -38,6 +38,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get a single tweet by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const tweet = await Tweet.findById(id).populate('userId', 'name email');
+    } catch (err) {
+        console.error('Error fetching tweet by ID:', err);
+        res.status(500).json({ error: 'Failed to fetch tweet' });
+    }
+});
+
 // Update a tweet
 router.put('/:id', isAuthenticated, async (req, res) => {
     try {
@@ -165,6 +176,37 @@ router.post('/:id/dislike', isAuthenticated, async (req, res) => {
     }
 });
 
+// Retweet a tweet
+router.post('/:id/retweet', isAuthenticated, async (req, res) => {
+    const { id } = req.params; // Original tweet ID
+    const userId = req.session.user.id; // Get the logged-in user's ID
+
+    if (!userId) {
+        console.error('User must be logged in to retweet: ', userId);
+        return res.status(401).json({ error: 'User must be logged in to retweet.' });
+    }
+
+    try {
+        // Find the original tweet
+        const originalTweet = await Tweet.findById(id);
+        if (!originalTweet) {
+            return res.status(404).json({ error: 'Original tweet not found' });
+        }
+
+        // Create the retweet
+        const retweet = new Tweet({
+            content: originalTweet.content, // Retweets do not have original content, we use this to display the original tweet
+            userId: userId,
+            originalTweetId: originalTweet._id, // Reference to the original tweet
+        });
+
+        await retweet.save();
+        res.status(201).json({ message: 'Retweet successful', retweet });
+    } catch (error) {
+        console.error('Error retweeting:', error);
+        res.status(500).json({ error: 'Failed to retweet' });
+    }
+});
 
 
 module.exports = router;
