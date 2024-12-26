@@ -32,13 +32,20 @@ async function fetchTweets(selectedUserIds = []) {
             return;
         }
 
+        // Regular expression to match URLs
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+
         // Render tweets
         filteredTweets.forEach(tweet => {
             const tweetElement = document.createElement('div');
             tweetElement.className = 'tweet';
 
-            // Replace newline characters with <br> tags
-            const formattedContent = tweet.content.replace(/\n/g, '<br>');
+            // Replace URLs and newline characters in the content
+            const formattedContent = tweet.content
+                .replace(urlRegex, url => {
+                    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+                })
+                .replace(/\n/g, '<br>'); // Replace newlines after formatting URLs
 
             // Check if the tweet belongs to the logged-in user
             const isOwnTweet = loggedInUser && tweet.userId._id === loggedInUser.id;
