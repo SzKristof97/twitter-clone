@@ -78,22 +78,39 @@ router.put('/:id', isAuthenticated, async (req, res) => {
     }
 });
 
-// Delete a tweet
+// Delete a tweet and its retweets recursively
 router.delete('/:id', isAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
-        const tweet = await Tweet.findById(id);
 
+        // Find the tweet to delete
+        const tweet = await Tweet.findById(id);
         if (!tweet) {
             return res.status(404).json({ error: 'Tweet not found' });
         }
 
+        // Ensure the logged-in user owns the tweet
         if (tweet.userId.toString() !== req.session.user.id) {
             return res.status(403).json({ error: 'You can only delete your own tweets' });
         }
 
+        // Recursive function to delete all retweets
+        const deleteRetweets = async (tweetId) => {
+            const retweets = await Tweet.find({ originalTweetId: tweetId });
+
+            for (const retweet of retweets) {
+                await deleteRetweets(retweet._id); // Recursively delete retweets of retweets
+                await Tweet.deleteOne({ _id: retweet._id }); // Delete the retweet
+            }
+        };
+
+        // Start deleting retweets
+        await deleteRetweets(id);
+
+        // Delete the original tweet
         await Tweet.deleteOne({ _id: id });
-        res.status(200).json({ message: 'Tweet deleted successfully' });
+
+        res.status(200).json({ message: 'Tweet and its retweets deleted successfully' });
     } catch (err) {
         console.error('Error deleting tweet:', err);
         res.status(500).json({ error: 'Failed to delete tweet' });
