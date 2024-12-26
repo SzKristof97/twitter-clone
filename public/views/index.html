@@ -4,37 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twitter Clone</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <!-- Link Base and Layout CSS -->
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+
+    <!-- Section-Specific CSS -->
+    <link rel="stylesheet" href="../css/tweets.css">
+    <link rel="stylesheet" href="../css/users.css">
+    <link rel="stylesheet" href="../css/hero.css">
+    <link rel="stylesheet" href="../css/share-tweet.css">
 </head>
 <body>
     <header class="header-container">
         <h1><a href="/">Twitter Clone</a></h1>
         <div class="header-actions" id="header-actions"></div>
     </header>
-    <main>
-        <section class="hero">
-            <h2>Welcome to Twitter Clone</h2>
-            <p>Join the conversation. Connect with friends and the world around you.</p>
-        </section>
-
-        <!-- Share Your Tweet Section -->
-        <section id="share-tweet-section" class="share-tweet-section hidden">
-            <h2>Share Your Tweet</h2>
-            <form id="share-tweet-form">
-                <textarea id="tweet-content" name="content" placeholder="What's on your mind?" required></textarea>
-                <div class="char-counter-container">
-                    <span id="char-counter">0/1000</span>
+    <main class="content-container">
+        <!-- Left Content -->
+        <div class="main-content">
+            <section class="hero">
+                <h2>Welcome to Twitter Clone</h2>
+                <p>Join the conversation. Connect with friends and the world around you.</p>
+            </section>
+    
+            <!-- Share Your Tweet Section -->
+            <section id="share-tweet-section" class="share-tweet-section hidden">
+                <h2>Share Your Tweet</h2>
+                <form id="share-tweet-form">
+                    <textarea id="tweet-content" name="content" placeholder="What's on your mind?" required></textarea>
+                    <div class="char-counter-container">
+                        <span id="char-counter">0/1000</span>
+                    </div>
+                    <button type="submit" class="button">Tweet</button>
+                </form>
+            </section>
+    
+            <section id="tweets-section">
+                <h2>Recent Tweets</h2>
+                <div id="tweets-container">
+                    <p class="loading">Loading tweets...</p>
                 </div>
-                <button type="submit" class="button">Tweet</button>
-            </form>
-        </section>
-
-        <section id="tweets-section">
-            <h2>Recent Tweets</h2>
-            <div id="tweets-container">
-                <p class="loading">Loading tweets...</p>
-            </div>
-        </section>
+            </section>
+        </div>
+    
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <section id="users-section" class="users-section">
+                <h2>Registered Users</h2>
+                <div id="users-container">
+                    <p class="loading">Loading users...</p>
+                </div>
+            </section>
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 Twitter Clone. All rights reserved.</p>
@@ -42,5 +63,6 @@
     <script src="../js/session.js"></script>
     <script src="../js/tweets.js"></script>
     <script src="../js/share-tweet.js"></script>
+    <script src="../js/users.js"></script>
 </body>
 </html>

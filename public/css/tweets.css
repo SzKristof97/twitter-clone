@@ -1,0 +1,102 @@
+/* Tweets Section */
+#tweets-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+/* Tweet Card */
+.tweet {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #292929;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+/* Tweet Header */
+.tweet-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: #aaaaaa;
+}
+
+/* Tweet Body */
+.tweet-body {
+    word-wrap: break-word;
+    white-space: normal;
+    font-size: 1rem;
+    overflow: hidden;
+}
+
+/* Tweet Footer */
+.tweet-footer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Like Button */
+.tweet-footer .like-button {
+    background: none;
+    border: none;
+    color: #1da1f2;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.tweet-footer .like-button:hover {
+    color: #0c85d0;
+    transform: scale(1.1);
+}
+
+/* Dislike Button */
+.tweet-footer .dislike-button {
+    background: none;
+    border: none;
+    color: #e74c3c; /* Red for dislike */
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.tweet-footer .dislike-button:hover {
+    color: #c0392b;
+    transform: scale(1.1);
+}
+
+/* Delete Button */
+.tweet-footer .delete-button {
+    background: none;
+    border: none;
+    color: #aaaaaa;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.tweet-footer .delete-button:hover {
+    color: #ff4757; /* Bright red for delete hover */
+    transform: scale(1.1);
+}
+
+/* Button Icons */
+.tweet-footer button span {
+    font-size: 1.2rem; /* Adjust icon size */
+}

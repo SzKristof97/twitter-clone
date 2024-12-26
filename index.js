@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const authRoutes = require('./routes/auth');
 const tweetRoutes = require('./routes/tweets');
 const sessionRoutes = require('./routes/session');
+const userRoutes = require('./routes/users');
 const errorHandler = require('./middleware/errorHandler'); // Import the error handler
 
 app.use(session({
@@ -44,6 +45,7 @@ app.use(session({
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tweets', tweetRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api', sessionRoutes);
 
 // Catch-all route to serve the index.html by default
@@ -61,11 +63,9 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/views/register.html'));
 });
 
-// Catch-all route for unknown routes
+// Catch-all route for unknown routes and redirect it to the index.html
 app.use((req, res, next) => {
-    const error = new Error('Not Found');
-    error.status = 404;
-    next(error);
+    res.status(404).sendFile(path.join(__dirname, 'public/views/index.html'));
 });
 
 

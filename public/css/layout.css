@@ -1,0 +1,121 @@
+/* Layout */
+.content-container {
+    display: flex;
+    flex-direction: column; /* Stack content vertically by default */
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    /* Switch to a side-by-side layout for larger screens */
+    .content-container {
+        flex-direction: row;
+    }
+}
+
+/* Main Content */
+.main-content {
+    flex: 3;
+    width: 100%; /* Ensure full width on smaller screens */
+}
+
+/* Right Sidebar */
+.right-sidebar {
+    flex: 1;
+    width: 100%; /* Full width on smaller screens */
+    border-left: 1px solid #292929;
+    padding-left: 1rem;
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    .right-sidebar {
+        width: auto; /* Adjust based on flex settings */
+    }
+}
+
+/* Prevent Horizontal Overflow */
+body {
+    overflow-x: hidden;
+}
+
+/* Header */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #1e1e1e;
+    border-bottom: 2px solid #292929;
+}
+
+.header-container h1 a {
+    color: #e0e0e0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    background-color: #1da1f2;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #0c85d0;
+}
+
+/* Header Actions */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #ffffff;
+}
+
+.user-profile span {
+    font-size: 1rem;
+    color: #e0e0e0;
+}
+
+.logout-button {
+    background-color: #e74c3c; /* Red for logout */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #1e1e1e;
+    border-top: 1px solid #292929;
+    color: #aaaaaa;
+}

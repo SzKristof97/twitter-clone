@@ -1,0 +1,30 @@
+/* Hero Section */
+.hero {
+    background-color: #1e1e1e; /* Slightly lighter dark for contrast */
+    color: #e0e0e0;
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.hero h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #aaaaaa;
+}
+
+.hero a {
+    color: #1da1f2;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.hero a:hover {
+    color: #0c85d0;
+}
