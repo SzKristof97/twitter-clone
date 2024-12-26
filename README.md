@@ -1,13 +1,14 @@
 # Twitter Clone
 
-A simple Twitter-like application built with **Node.js**, **Express**, **MongoDB**, and **Express-Session** for authentication. This project allows users to register, log in, create, edit, delete tweets, view tweets from other users, and share tweets via a modern interface.
+A simple Twitter-like application built with **Node.js**, **Express**, **MongoDB**, and **Express-Session** for authentication. This project allows users to register, log in, create, retweet, like, dislike, and delete tweets. Users can view public tweets and dynamically interact with the application via a modern interface.
 
 ---
 
 ## Features
 
 - **User Authentication**: Secure registration and login using sessions.
-- **Tweet Management**: Create, update, and delete tweets.
+- **Tweet Management**: Create, retweet, update, and delete tweets.
+- **Retweets**: Share tweets with an attribution to the original content.
 - **Public Tweets**: View tweets from all users without authentication.
 - **Modern UI**: Share tweets with a dynamic, user-friendly interface.
 - **Session Handling**: "Share Your Tweet" section and protected routes only accessible to logged-in users.
@@ -113,7 +114,7 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
 ### **Tweets**
 
 #### `GET /api/tweets`
-- **Description**: Fetches all tweets from all users.
+- **Description**: Fetches all tweets from all users. Includes retweet data (if applicable).
 - **Response**:
   ```json
   {
@@ -126,6 +127,17 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
                   "name": "John Doe",
                   "email": "johndoe@example.com"
               },
+              "originalTweetId": null,
+              "createdAt": "timestamp"
+          },
+          {
+              "_id": "retweet_id",
+              "content": "This is the original tweet",
+              "userId": {
+                  "_id": "user_id",
+                  "name": "Alice"
+              },
+              "originalTweetId": "tweet_id",
               "createdAt": "timestamp"
           }
       ]
@@ -134,12 +146,6 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
 
 #### `POST /api/tweets`
 - **Description**: Creates a new tweet (requires authentication).
-- **Headers**:
-  ```json
-  {
-      "Authorization": "Session-Based Authentication"
-  }
-  ```
 - **Request Body**:
   ```json
   {
@@ -154,6 +160,22 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
           "_id": "tweet_id",
           "content": "This is my new tweet",
           "userId": "user_id",
+          "createdAt": "timestamp"
+      }
+  }
+  ```
+
+#### `POST /api/tweets/:id/retweet`
+- **Description**: Retweets an existing tweet (requires authentication).
+- **Response**:
+  ```json
+  {
+      "message": "Retweet successful",
+      "retweet": {
+          "_id": "retweet_id",
+          "content": "This is the original tweet",
+          "userId": "user_id",
+          "originalTweetId": "tweet_id",
           "createdAt": "timestamp"
       }
   }
@@ -181,11 +203,11 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
   ```
 
 #### `DELETE /api/tweets/:id`
-- **Description**: Deletes a tweet (requires authentication and ownership).
+- **Description**: Deletes a tweet and its associated retweets recursively (requires authentication and ownership).
 - **Response**:
   ```json
   {
-      "message": "Tweet deleted successfully"
+      "message": "Tweet and its retweets deleted successfully"
   }
   ```
 
@@ -215,6 +237,13 @@ This project uses **MongoDB** as the database. Ensure MongoDB is installed and r
 - **Visible only to logged-in users.**
 - Allows users to write and submit tweets via a form.
 - Dynamically updates the tweets section after submission.
+
+### **Retweets**
+- Users can retweet posts, which displays the original content with attribution.
+- Retweets are dynamically displayed and linked to the original tweet.
+
+### **Recursive Deletion**
+- Deleting a tweet automatically deletes all retweets and nested retweets associated with it.
 
 ---
 
