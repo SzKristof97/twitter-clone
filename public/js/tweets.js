@@ -1,4 +1,4 @@
-async function fetchTweets() {
+async function fetchTweets(selectedUserIds = []) {
     const tweetsContainer = document.getElementById('tweets-container');
 
     try {
@@ -21,14 +21,19 @@ async function fetchTweets() {
         // Clear existing tweets
         tweetsContainer.innerHTML = '';
 
+        // Filter tweets based on selected users
+        const filteredTweets = selectedUserIds.length > 0
+        ? data.tweets.filter(tweet => selectedUserIds.includes(tweet.userId._id))
+        : data.tweets;
+
         // Check if there are tweets
-        if (data.tweets.length === 0) {
-            tweetsContainer.innerHTML = '<p>No tweets available.</p>';
+        if (filteredTweets.length === 0) {
+            tweetsContainer.innerHTML = '<p class="loading">No tweets available.</p>';
             return;
         }
 
         // Render tweets
-        data.tweets.forEach(tweet => {
+        filteredTweets.forEach(tweet => {
             const tweetElement = document.createElement('div');
             tweetElement.className = 'tweet';
 
@@ -163,4 +168,11 @@ async function handleDeleteTweet(button) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', fetchTweets);
+document.addEventListener('DOMContentLoaded', () => {
+    fetchTweets();
+
+    // Listen for user selection changes
+    document.addEventListener('userSelectionChange', event => {
+        fetchTweets(event.detail);
+    });
+});

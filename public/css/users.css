@@ -20,6 +20,13 @@
     width: 100%; /* Adjust to container width */
 }
 
+.user-card.selected {
+    border: 2px solid #1da1f2;
+    background-color: #121212;
+    box-shadow: 0 0 10px rgba(29, 161, 242, 0.5);
+    transform: scale(1.02); /* Slight enlargement for feedback */
+}
+
 .user-card:hover {
     transform: translateY(-2px);
 }
